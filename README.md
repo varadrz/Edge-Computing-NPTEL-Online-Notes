@@ -25,7 +25,18 @@ A comprehensive study companion for the NPTEL course on **Edge Computing**. This
 
 ## 🛠️ How to Use
 
-Simply open the `edge_computing_exam_prep.html` file in any modern web browser to access the interactive dashboard.
+Simply open the `index.html` file in any modern web browser to access the interactive dashboard locally.
+
+## 🚀 Deployment (GitHub Pages)
+
+This project is optimized for GitHub Pages. To deploy:
+1. Go to your repository **Settings** on GitHub.
+2. Select **Pages** from the left sidebar.
+3. Under **Build and deployment > Branch**, select `main` and the folder `/ (root)`.
+4. Click **Save**.
+
+Your study guide will be live at:
+`https://varadrz.github.io/Edge-Computing-NPTEL-Online-Notes/`
 
 ---
 *Created as a resource for NPTEL exam preparation.*
