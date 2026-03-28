@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edge Computing — NPTEL Exam Prep</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #1e2d45;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --warn: #f59e0b;
+    --danger: #ef4444;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --mono: 'Space Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  /* Animated grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── HEADER ─────────────────────────── */
+  header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,14,26,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 24px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .logo span { color: var(--muted); }
+  nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; }
+  nav button {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--muted);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  nav button:hover { color: var(--text); border-color: var(--border); }
+  nav button.active {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* ─── MAIN ────────────────────────────── */
+  main { position: relative; z-index: 1; padding: 24px; max-width: 1100px; margin: 0 auto; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ─── PAGE TITLES ─────────────────────── */
+  .page-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  h1 { font-size: 28px; font-weight: 700; margin-bottom: 24px; }
+  h2 { font-size: 18px; font-weight: 600; margin-bottom: 12px; color: var(--text); }
+  h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; color: var(--accent); }
+
+  /* ─── CARDS ───────────────────────────── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    transition: border-color .2s;
+  }
+  .card:hover { border-color: rgba(0,212,255,0.3); }
+
+  /* ─── WEEK GRID ───────────────────────── */
+  .week-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .week-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all .2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .week-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .week-card.w1::before { background: linear-gradient(90deg, #00d4ff, #0080ff); }
+  .week-card.w2::before { background: linear-gradient(90deg, #7c3aed, #a855f7); }
+  .week-card.w3::before { background: linear-gradient(90deg, #10b981, #34d399); }
+  .week-card.w4::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+  .week-card.w5::before { background: linear-gradient(90deg, #ef4444, #f87171); }
+  .week-card.w6::before { background: linear-gradient(90deg, #06b6d4, #22d3ee); }
+  .week-card.w7::before { background: linear-gradient(90deg, #ec4899, #f472b6); }
+  .week-card.w8::before { background: linear-gradient(90deg, #84cc16, #a3e635); }
+  .week-card:hover { transform: translateY(-2px); border-color: rgba(0,212,255,0.4); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+  .week-num { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 2px; margin-bottom: 8px; }
+  .week-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .week-topics { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 20px; margin-top: 10px; font-family: var(--mono); }
+  .badge-blue { background: rgba(0,212,255,0.1); color: var(--accent); border: 1px solid rgba(0,212,255,0.2); }
+
+  /* ─── NOTES DETAIL ────────────────────── */
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: transparent; border: 1px solid var(--border);
+    color: var(--muted); font-family: var(--sans); font-size: 13px;
+    padding: 7px 14px; border-radius: 8px; cursor: pointer;
+    margin-bottom: 20px; transition: all .2s;
+  }
+  .back-btn:hover { color: var(--text); border-color: var(--accent); }
+
+  .note-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .note-section-header {
+    padding: 14px 18px;
+    cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+    transition: background .2s;
+    font-weight: 600; font-size: 14px;
+  }
+  .note-section-header:hover { background: var(--surface2); }
+  .note-section-body { padding: 0 18px; max-height: 0; overflow: hidden; transition: max-height .35s ease, padding .2s; }
+  .note-section-body.open { max-height: 3000px; padding: 4px 18px 18px; }
+  .chevron { transition: transform .3s; color: var(--muted); }
+  .chevron.open { transform: rotate(180deg); }
+
+  ul.notes-list { padding-left: 20px; }
+  ul.notes-list li { margin-bottom: 6px; font-size: 14px; line-height: 1.65; color: var(--text); }
+  ul.notes-list li strong { color: var(--accent); }
+
+  .def-box {
+    background: var(--surface2);
+    border-left: 3px solid var(--accent);
+    padding: 10px 14px;
+    border-radius: 0 8px 8px 0;
+    margin: 10px 0;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .def-box strong { color: var(--accent); }
+
+  .table-wrap { overflow-x: auto; margin: 10px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: var(--surface2); padding: 10px 12px; text-align: left; color: var(--accent); font-weight: 600; border-bottom: 2px solid var(--border); }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.5; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .highlight { color: var(--warn); font-weight: 600; }
+  .tag { display: inline-block; background: rgba(124,58,237,0.15); color: #a78bfa; border: 1px solid rgba(124,58,237,0.3); border-radius: 4px; font-size: 11px; padding: 1px 6px; margin: 1px; font-family: var(--mono); }
+
+  /* ─── MCQ / QUIZ ──────────────────────── */
+  .quiz-controls { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+  .quiz-controls select {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 13px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    outline: none;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 18px; border-radius: 8px;
+    font-family: var(--sans); font-size: 14px; font-weight: 600;
+    cursor: pointer; border: none; transition: all .2s;
+  }
+  .btn-primary { background: var(--accent); color: #000; }
+  .btn-primary:hover { background: #00b8d9; transform: translateY(-1px); }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--accent); }
+  .btn-danger { background: rgba(239,68,68,0.15); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
+
+  .quiz-progress { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+  .quiz-progress span { color: var(--accent); font-weight: 700; }
+
+  .q-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .q-num { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-bottom: 10px; }
+  .q-text { font-size: 15px; font-weight: 500; line-height: 1.65; margin-bottom: 20px; }
+  .options { display: grid; gap: 10px; }
+  .option {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex; align-items: flex-start; gap: 12px;
+    font-size: 14px; line-height: 1.5;
+    transition: all .18s;
+  }
+  .option:hover:not(.disabled) { border-color: var(--accent); background: rgba(0,212,255,0.05); }
+  .option.selected { border-color: var(--accent2); background: rgba(124,58,237,0.1); }
+  .option.correct { border-color: var(--accent3); background: rgba(16,185,129,0.1); }
+  .option.wrong { border-color: var(--danger); background: rgba(239,68,68,0.08); }
+  .option.disabled { cursor: default; }
+  .opt-key {
+    font-family: var(--mono); font-size: 12px; font-weight: 700;
+    min-width: 22px; height: 22px; display: flex; align-items: center; justify-content: center;
+    border-radius: 4px; border: 1px solid var(--border);
+    background: var(--surface); flex-shrink: 0; margin-top: 1px;
+  }
+  .option.correct .opt-key { background: var(--accent3); color: #000; border-color: var(--accent3); }
+  .option.wrong .opt-key { background: var(--danger); color: #fff; border-color: var(--danger); }
+  .option.selected .opt-key { background: var(--accent2); color: #fff; border-color: var(--accent2); }
+
+  .explanation {
+    background: var(--surface2);
+    border-left: 3px solid var(--accent3);
+    padding: 12px 16px; border-radius: 0 8px 8px 0;
+    font-size: 13px; line-height: 1.6; margin-top: 12px;
+    display: none;
+  }
+  .explanation.show { display: block; }
+  .explanation.wrong-exp { border-left-color: var(--danger); }
+
+  .score-board {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 32px;
+    text-align: center;
+    display: none;
+  }
+  .score-board.show { display: block; }
+  .score-big { font-size: 64px; font-weight: 700; font-family: var(--mono); }
+  .score-big.good { color: var(--accent3); }
+  .score-big.avg { color: var(--warn); }
+  .score-big.bad { color: var(--danger); }
+  .score-label { font-size: 14px; color: var(--muted); margin-top: 6px; margin-bottom: 20px; }
+
+  /* ─── IMPORTANT QUESTIONS ─────────────── */
+  .iq-grid { display: grid; gap: 12px; }
+  .iq-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    cursor: pointer;
+    transition: all .2s;
+    position: relative;
+  }
+  .iq-item:hover { border-color: rgba(0,212,255,0.4); }
+  .iq-item .iq-q { font-size: 14px; font-weight: 500; line-height: 1.6; }
+  .iq-item .iq-tags { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .iq-item .iq-ans {
+    display: none;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    font-size: 13px; line-height: 1.7; color: #c4cfe0;
+  }
+  .iq-item .iq-ans.show { display: block; }
+  .iq-item .toggle-ans {
+    position: absolute; right: 16px; top: 16px;
+    background: transparent; border: 1px solid var(--border);
+    color: var(--muted); font-size: 11px; padding: 2px 8px;
+    border-radius: 4px; cursor: pointer; transition: all .2s;
+    font-family: var(--mono);
+  }
+  .iq-item:hover .toggle-ans { border-color: var(--accent); color: var(--accent); }
+
+  /* ─── MOCK TEST ───────────────────────── */
+  .mock-intro { text-align: center; padding: 40px 0; }
+  .mock-intro h2 { font-size: 24px; margin-bottom: 12px; }
+  .mock-intro p { color: var(--muted); font-size: 14px; max-width: 500px; margin: 0 auto 24px; line-height: 1.7; }
+  .mock-meta { display: flex; gap: 24px; justify-content: center; margin-bottom: 28px; flex-wrap: wrap; }
+  .mock-meta-item { text-align: center; }
+  .mock-meta-item .val { font-family: var(--mono); font-size: 28px; font-weight: 700; color: var(--accent); }
+  .mock-meta-item .lbl { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .timer {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--surface2); border: 1px solid var(--border);
+    padding: 8px 16px; border-radius: 8px;
+    font-family: var(--mono); font-size: 16px; font-weight: 700;
+    color: var(--accent); margin-bottom: 20px;
+  }
+  .timer.warn { color: var(--warn); border-color: rgba(245,158,11,0.3); }
+  .timer.danger { color: var(--danger); border-color: rgba(239,68,68,0.3); animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .6; } }
+
+  .question-nav {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px;
+  }
+  .q-nav-btn {
+    width: 36px; height: 36px; border-radius: 6px;
+    font-family: var(--mono); font-size: 12px; font-weight: 700;
+    cursor: pointer; border: 1px solid var(--border);
+    background: var(--surface2); color: var(--muted);
+    transition: all .15s; display: flex; align-items: center; justify-content: center;
+  }
+  .q-nav-btn:hover { border-color: var(--accent); color: var(--text); }
+  .q-nav-btn.current { background: var(--accent); color: #000; border-color: var(--accent); }
+  .q-nav-btn.answered { background: rgba(16,185,129,0.15); color: var(--accent3); border-color: rgba(16,185,129,0.3); }
+
+  /* ─── SCROLLBAR ───────────────────────── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+  @media (max-width: 600px) {
+    main { padding: 14px; }
+    nav button { font-size: 12px; padding: 5px 10px; }
+    .score-big { font-size: 48px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">NPTEL <span>// </span>Edge Computing</div>
+  <nav>
+    <button class="active" onclick="showSection('notes')">📚 Notes</button>
+    <button onclick="showSection('iq')">❓ Imp. Questions</button>
+    <button onclick="showSection('mcq')">🎯 Practice MCQ</button>
+    <button onclick="showSection('mock')">📝 Mock Test</button>
+  </nav>
+</header>
+
+<main>
+
+<!-- ═══════════════════════════════════════ NOTES ═══════════════════════════════════════ -->
+<div id="notes" class="section active">
+  <div class="page-title">// Short Notes</div>
+  <h1>8-Week Study Guide</h1>
+
+  <div id="notes-home">
+    <div class="week-grid" id="week-grid"></div>
+  </div>
+
+  <div id="notes-detail" style="display:none">
+    <button class="back-btn" onclick="showWeekGrid()">← Back to Weeks</button>
+    <div id="week-content"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ IMPORTANT QUESTIONS ═══════════════════════════════════════ -->
+<div id="iq" class="section">
+  <div class="page-title">// Important Questions</div>
+  <h1>High-Probability Exam Questions</h1>
+  <div id="iq-content"></div>
+</div>
+
+<!-- ═══════════════════════════════════════ MCQ PRACTICE ═══════════════════════════════════════ -->
+<div id="mcq" class="section">
+  <div class="page-title">// Practice MCQ</div>
+  <h1>Topic-wise Practice</h1>
+  <div class="quiz-controls">
+    <select id="mcq-week-select">
+      <option value="all">All Weeks</option>
+      <option value="1">Week 1 – Cloud & Edge Intro</option>
+      <option value="2">Week 2 – Virtualization & Docker</option>
+      <option value="3">Week 3 – Kubernetes, NoSQL, Edge AI</option>
+      <option value="4">Week 4 – Edge AI & Federated Learning</option>
+      <option value="5">Week 5 – Mobile Edge Computing</option>
+      <option value="6">Week 6 – Geo DCs & Clock Sync</option>
+      <option value="7">Week 7 – Security & Privacy</option>
+      <option value="8">Week 8 – Resource Allocation & RL</option>
+    </select>
+    <button class="btn btn-primary" onclick="startMCQ()">Start Practice</button>
+  </div>
+  <div id="mcq-container"></div>
+</div>
+
+<!-- ═══════════════════════════════════════ MOCK TEST ═══════════════════════════════════════ -->
+<div id="mock" class="section">
+  <div class="page-title">// Predicted Mock Test</div>
+  <div id="mock-intro" class="mock-intro">
+    <h2>NPTEL Final Exam Simulation</h2>
+    <p>This predicted test paper covers all 8 weeks with NPTEL-style questions. 30 questions · 60 minutes. Marks: +1 correct, 0 wrong (no negative marking).</p>
+    <div class="mock-meta">
+      <div class="mock-meta-item"><div class="val">30</div><div class="lbl">Questions</div></div>
+      <div class="mock-meta-item"><div class="val">60</div><div class="lbl">Minutes</div></div>
+      <div class="mock-meta-item"><div class="val">MCQ</div><div class="lbl">Format</div></div>
+    </div>
+    <button class="btn btn-primary" style="font-size:16px;padding:12px 32px" onclick="startMock()">▶ Start Mock Test</button>
+  </div>
+  <div id="mock-test" style="display:none">
+    <div style="display:flex;gap:16px;align-items:center;margin-bottom:16px;flex-wrap:wrap">
+      <div class="timer" id="mock-timer">⏱ 60:00</div>
+      <div style="flex:1;font-family:var(--mono);font-size:12px;color:var(--muted)">
+        Question <span id="mock-q-num" style="color:var(--accent)">1</span>/30
+      </div>
+      <button class="btn btn-danger" onclick="submitMock()">Submit Test</button>
+    </div>
+    <div class="question-nav" id="mock-nav"></div>
+    <div id="mock-q-container"></div>
+    <div style="display:flex;gap:12px;margin-top:16px">
+      <button class="btn btn-secondary" onclick="mockPrev()" id="mock-prev-btn">← Prev</button>
+      <button class="btn btn-primary" onclick="mockNext()" id="mock-next-btn">Next →</button>
+    </div>
+  </div>
+  <div id="mock-result" style="display:none"></div>
+</div>
+
+</main>
+
+<script>
+// ═══════════════════ DATA ════════════════════════
+
+const WEEKS = [
+  {
+    id: 1, cls: 'w1',
+    title: 'Cloud Computing & Edge Computing Intro',
+    topics: 'Cloud overview · Cloud limitations · Edge Computing · Edge Paradigms',
+    content: {
+      sections: [
+        {
+          title: '📌 Cloud Computing Overview',
+          body: `
+          <ul class="notes-list">
+            <li><strong>Definition:</strong> Cloud = scalable, on-demand computing services over the Internet (compute, storage, networking)</li>
+            <li><strong>Historical quotes:</strong> Sun (1984): "Network is the computer" → Patterson (2008): "Data center is the computer" → Buyya: "Cloud is the computer"</li>
+            <li><strong>Cloud features:</strong> On-demand self-service, broad network access, resource pooling, rapid elasticity, measured service</li>
+            <li><strong>Deployment models:</strong> Public cloud (AWS, Azure, GCP), Private cloud (owned by org), Hybrid, Community</li>
+            <li><strong>Service models:</strong> IaaS (EC2), PaaS (AppEngine), SaaS (Gmail)</li>
+            <li><strong>Key metrics:</strong> PUE = Total Facility Power / IT Equipment Power (lower is better; Google ~1.11), WUE = Annual Water Usage / IT Equipment Energy</li>
+          </ul>
+          <div class="def-box"><strong>Three-tier architecture:</strong> Compute nodes + Storage nodes + Front-end. A single-site cloud = "Datacenter". Geo-distributed cloud = multiple sites.</div>`
+        },
+        {
+          title: '⚡ Cloud Limitations → Need for Edge',
+          body: `
+          <ul class="notes-list">
+            <li><strong>Latency problem:</strong> RTT to cloud can be 50-200ms; many IoT/real-time apps need &lt;10ms</li>
+            <li><strong>Bandwidth cost:</strong> Sending all sensor data to cloud is expensive and slow</li>
+            <li><strong>Privacy:</strong> Sensitive data (medical, financial) should not always leave premises</li>
+            <li><strong>Reliability:</strong> Cloud outages affect all connected devices</li>
+            <li><strong>Bandwidth bottleneck:</strong> IoT data growing exponentially; cloud backhaul can't scale</li>
+          </ul>`
+        },
+        {
+          title: '🌐 Introduction to Edge Computing',
+          body: `
+          <div class="def-box"><strong>Edge Computing:</strong> A distributed computing paradigm that brings computation and data storage closer to the sources of data.</div>
+          <ul class="notes-list">
+            <li><strong>Goal:</strong> Reduce latency, save bandwidth, improve privacy, enable real-time processing</li>
+            <li><strong>Architecture:</strong> Three-tier = IoT devices → Edge nodes → Cloud</li>
+            <li><strong>Edge mimics cloud:</strong> Delivers storage, compute, network services locally</li>
+            <li><strong>Data sovereignty:</strong> Keeps data where it actually belongs</li>
+            <li><strong>Key use cases:</strong> Smart cities, autonomous vehicles, healthcare monitoring, industrial IoT</li>
+          </ul>
+          <div class="def-box"><strong>IoT Gateway:</strong> Intermediary between IoT devices and cloud. Does protocol translation, data aggregation, filtering, and local processing.</div>`
+        },
+        {
+          title: '🏗 Edge Computing Paradigms',
+          body: `
+          <div class="table-wrap"><table>
+            <tr><th>Paradigm</th><th>Key Idea</th><th>Example</th></tr>
+            <tr><td><strong>Thick Edge</strong></td><td>Powerful on-prem servers (SCADA, data lakes)</td><td>Industrial plant</td></tr>
+            <tr><td><strong>Thin/Micro Edge</strong></td><td>Small gateways forwarding to cloud</td><td>Raspberry Pi gateway</td></tr>
+            <tr><td><strong>Cloudlet</strong></td><td>Small data center 1-hop from mobile devices</td><td>Campus WiFi server</td></tr>
+            <tr><td><strong>Fog Computing</strong></td><td>Cisco's model; hierarchical; at network edge</td><td>Smart city nodes</td></tr>
+            <tr><td><strong>MEC (Mobile Edge Computing)</strong></td><td>Compute at cellular RAN (4G/5G base station)</td><td>Telecom operator</td></tr>
+            <tr><td><strong>Collaborative End-Edge-Cloud</strong></td><td>All three tiers cooperate</td><td>CDN + Edge + IoT</td></tr>
+          </table></div>
+          <ul class="notes-list">
+            <li><strong>Latency models:</strong> (1) Edge-only, (2) Cloud-only, (3) Two-level (Edge+Cloud), (4) Three-level (Device+Edge+Cloud)</li>
+            <li><strong>Three-level offloading:</strong> Adds collaborative edge layer between device and cloud; reduces overall service time</li>
+          </ul>`
+        }
+      ]
+    }
+  },
+  {
+    id: 2, cls: 'w2',
+    title: 'Virtualization & Docker Containers',
+    topics: 'Hypervisors · VM types · Docker · Containers vs VMs · SDN · NFV',
+    content: {
+      sections: [
+        {
+          title: '🖥 Virtualization Fundamentals',
+          body: `
+          <div class="def-box"><strong>Virtualization:</strong> Abstraction of physical components (CPU, memory, storage, network) into logical virtual objects.</div>
+          <ul class="notes-list">
+            <li><strong>Benefits:</strong> Consolidation, cost savings, elasticity, reliability (snapshots), isolation, portability</li>
+            <li><strong>Three components:</strong> Guest (interacts with virtualization layer), Virtualization Layer (VMM/Hypervisor), Host (physical hardware)</li>
+            <li><strong>VM characteristics:</strong> Isolation, Sharing, Aggregation, Emulation, Managed execution, Migration, Portability</li>
+          </ul>
+          <div class="table-wrap"><table>
+            <tr><th>Property</th><th>Meaning</th></tr>
+            <tr><td>Equivalence</td><td>VM behaves same as physical machine</td></tr>
+            <tr><td>Resource control</td><td>VMM fully controls resources</td></tr>
+            <tr><td>Efficiency</td><td>Most instructions run natively (no emulation)</td></tr>
+          </table></div>`
+        },
+        {
+          title: '💡 Hypervisors (Types 1 & 2)',
+          body: `
+          <div class="table-wrap"><table>
+            <tr><th>Feature</th><th>Type 1 (Bare-metal)</th><th>Type 2 (Hosted)</th></tr>
+            <tr><td>Runs on</td><td>Directly on hardware (replaces OS)</td><td>On top of host OS</td></tr>
+            <tr><td>Performance</td><td>Higher (direct HW access)</td><td>Lower (extra OS layer)</td></tr>
+            <tr><td>Examples</td><td>VMware ESXi, Hyper-V, Xen</td><td>VMware Workstation, VirtualBox</td></tr>
+            <tr><td>Use case</td><td>Data centers, servers</td><td>Developer workstations</td></tr>
+          </table></div>
+          <ul class="notes-list">
+            <li><strong>Security Rings:</strong> Ring 0 = OS kernel (most privileged), Ring 3 = User apps (least privileged)</li>
+            <li><strong>Privileged instructions:</strong> Execute only in Ring 0. Sensitive instructions: affect shared state but may not trap in user mode → breaks full virtualization</li>
+            <li><strong>Theorem 1:</strong> VMM can be built if sensitive instructions ⊆ privileged instructions</li>
+            <li><strong>Para-virtualization:</strong> Modifies guest OS to use hypercalls instead of privileged instructions (Xen). Better performance, OS must be modified.</li>
+            <li><strong>Full virtualization:</strong> Unmodified guest OS. Uses binary translation or HW-assisted (Intel VT-x, AMD-V)</li>
+            <li><strong>VMM modules:</strong> Dispatcher (entry point), Allocator (resources), Interpreter (executes privileged instructions)</li>
+          </ul>`
+        },
+        {
+          title: '🐳 Docker & Containers',
+          body: `
+          <div class="def-box"><strong>Container:</strong> OS-level virtualization. Shares host kernel, isolates user space. Lightweight, portable, fast startup.</div>
+          <div class="table-wrap"><table>
+            <tr><th>Aspect</th><th>Container</th><th>VM</th></tr>
+            <tr><td>Isolation level</td><td>OS level (shares kernel)</td><td>Hardware level (own kernel)</td></tr>
+            <tr><td>Startup time</td><td>Seconds</td><td>Minutes</td></tr>
+            <tr><td>Size</td><td>MBs</td><td>GBs</td></tr>
+            <tr><td>Portability</td><td>Very high (any OS)</td><td>Lower (hypervisor dependent)</td></tr>
+            <tr><td>Overhead</td><td>Minimal (no guest OS)</td><td>Higher (full guest OS)</td></tr>
+          </table></div>
+          <ul class="notes-list">
+            <li><strong>Docker:</strong> Platform for developing, shipping, running apps using container-based virtualization (open-sourced 2013)</li>
+            <li><strong>Docker components:</strong> Docker Daemon, Docker Client, Docker Hub (Registry), Images, Containers, Volumes</li>
+            <li><strong>Docker networking:</strong> Containers talk to each other without exposing ports to host; each container gets a private IP</li>
+            <li><strong>CaaS:</strong> Containers as a Service — Build (dev), Ship (registry), Run (production) workflow</li>
+          </ul>`
+        },
+        {
+          title: '🔗 SDN & NFV',
+          body: `
+          <div class="def-box"><strong>SDN (Software Defined Networking):</strong> Separates control plane (decisions) from data plane (forwarding). Centralized controller.</div>
+          <div class="def-box"><strong>NFV (Network Function Virtualization):</strong> Virtualizes network functions (firewall, load balancer) on commodity hardware instead of dedicated appliances.</div>
+          <ul class="notes-list">
+            <li><strong>OpenFlow:</strong> Standard SDN southbound protocol; controls forwarding tables directly</li>
+            <li><strong>SDN benefits:</strong> Programmability, centralized view, rapid reconfiguration</li>
+            <li><strong>NFV vs SDN:</strong> Complementary — NFV virtualizes network functions, SDN controls routing</li>
+          </ul>`
+        }
+      ]
+    }
+  },
+  {
+    id: 3, cls: 'w3',
+    title: 'Kubernetes, NoSQL & Edge AI',
+    topics: 'k8s architecture · CAP theorem · Cassandra · Consistent hashing · Edge AI basics',
+    content: {
+      sections: [
+        {
+          title: '☸ Kubernetes (k8s)',
+          body: `
+          <div class="def-box"><strong>Kubernetes:</strong> Open-source container orchestration platform by Google (2014). "k8s" = 8 letters between K and s. Means "helmsman" in Greek.</div>
+          <ul class="notes-list">
+            <li><strong>Control Plane:</strong> API Server (gateway, only one touching etcd), Scheduler (assigns pods to nodes), Controller Manager (ensures desired state), etcd (distributed key-value store — source of truth)</li>
+            <li><strong>Worker Node:</strong> Kubelet (runs pods, reports to API server), Kube-proxy (network routing, load balancing), Container Runtime (Docker, containerd)</li>
+            <li><strong>Scheduler:</strong> Selects best node for a Pod based on resources, constraints, policies</li>
+            <li><strong>kube-proxy:</strong> Handles networking between Pods; enables service discovery & load balancing</li>
+          </ul>
+          <div class="table-wrap"><table>
+            <tr><th>Object</th><th>Purpose</th></tr>
+            <tr><td>Pod</td><td>Smallest deployable unit; 1+ containers</td></tr>
+            <tr><td>Service</td><td>Stable IP/DNS; load balances across Pods</td></tr>
+            <tr><td>Deployment</td><td>Manages replica sets; rolling updates</td></tr>
+            <tr><td>ConfigMap</td><td>Non-sensitive config; change without rebuild</td></tr>
+            <tr><td>StatefulSet</td><td>Stateful workloads (databases)</td></tr>
+            <tr><td>Virtual Kubelet</td><td>Extends k8s to edge/IoT devices</td></tr>
+          </table></div>
+          <ul class="notes-list">
+            <li><strong>Self-healing:</strong> k8s restarts failed containers automatically</li>
+            <li><strong>Autoscaling:</strong> HPA scales pods based on CPU/memory; VPA adjusts resources</li>
+          </ul>`
+        },
+        {
+          title: '🗄 NoSQL & Key-Value Stores',
+          body: `
+          <div class="table-wrap"><table>
+            <tr><th>Feature</th><th>Relational (SQL)</th><th>NoSQL</th></tr>
+            <tr><td>Schema</td><td>Fixed, structured</td><td>Flexible, dynamic</td></tr>
+            <tr><td>Scaling</td><td>Vertical</td><td>Horizontal</td></tr>
+            <tr><td>Consistency</td><td>ACID</td><td>BASE (Eventually consistent)</td></tr>
+            <tr><td>Best for</td><td>Complex queries, transactions</td><td>High volume, distributed, IoT</td></tr>
+          </table></div>
+          <div class="def-box"><strong>CAP Theorem:</strong> A distributed system can only guarantee 2 of 3: Consistency, Availability, Partition Tolerance. Since partitions are inevitable, choose CP or AP.</div>
+          <ul class="notes-list">
+            <li><strong>Apache Cassandra:</strong> AP system (Available + Partition Tolerant). Wide-column store. No single point of failure. Used for IoT time-series data.</li>
+            <li><strong>Consistent Hashing:</strong> Data mapped to nodes on a ring. If RF=3, walk clockwise to find 3 distinct nodes for each key. Minimizes reshuffling when nodes join/leave.</li>
+            <li><strong>Replication Factor (RF):</strong> Number of copies of data maintained across nodes</li>
+          </ul>
+          <div class="def-box"><strong>Consistency models:</strong> Linearizability (strongest — immediately visible), Sequential Consistency, Eventual Consistency (weakest — converges over time)</div>`
+        },
+        {
+          title: '🤖 Edge AI — Intelligence at the Edge',
+          body: `
+          <ul class="notes-list">
+            <li><strong>Edge AI vs Cloud AI:</strong> Edge AI processes data locally → ultra-low latency, privacy, offline capability</li>
+            <li><strong>Benefits:</strong> Ultra low latency, Data reduction, Enhanced privacy, Reliability, Scalability</li>
+            <li><strong>Azure IoT Edge Modules:</strong> Insight Module (cognitive services locally), Action Module (decides actions after data processing), custom modules as pipeline stages</li>
+            <li><strong>Module twins:</strong> Cloud-side JSON document representing a module's desired and reported state</li>
+            <li><strong>Digital twin:</strong> Cloud-based virtual representation of physical device/module</li>
+          </ul>`
+        }
+      ]
+    }
+  },
+  {
+    id: 4, cls: 'w4',
+    title: 'Edge AI — Deep Learning & Federated Learning',
+    topics: 'Model compression · Knowledge distillation · Federated Learning · FedAvg',
+    content: {
+      sections: [
+        {
+          title: '🧠 Optimizing AI for Edge',
+          body: `
+          <ul class="notes-list">
+            <li><strong>Challenge:</strong> Deep learning models are huge (GBs); edge devices have limited compute/memory</li>
+            <li><strong>Model Compression techniques:</strong></li>
+          </ul>
+          <div class="table-wrap"><table>
+            <tr><th>Technique</th><th>Idea</th></tr>
+            <tr><td>Parameter Pruning</td><td>Remove unimportant weights/neurons</td></tr>
+            <tr><td>Low-rank Factorization</td><td>Decompose weight matrices into smaller ones</td></tr>
+            <tr><td>Quantization</td><td>Reduce weight precision (32-bit → 8-bit)</td></tr>
+            <tr><td>Knowledge Distillation</td><td>Train small "student" model from large "teacher"</td></tr>
+          </table></div>
+          <p style="color:var(--muted);font-size:13px;margin-top:8px">⚠️ Gradient Descent is an <em>optimization algorithm</em>, NOT a compression technique.</p>`
+        },
+        {
+          title: '🎓 Knowledge Distillation',
+          body: `
+          <div class="def-box"><strong>Knowledge Distillation:</strong> A large "teacher" model trains a small "student" model by transferring knowledge through soft targets (softmax probabilities) instead of hard labels.</div>
+          <ul class="notes-list">
+            <li><strong>Soft targets:</strong> Output probabilities from teacher (e.g., cat=0.7, dog=0.2, lion=0.1) — capture <em>inter-class relationships</em></li>
+            <li><strong>Hard labels:</strong> One-hot (cat=1, everything else=0) — lose similarity information</li>
+            <li><strong>Temperature (T):</strong> Controls softness of probabilities. Higher T → softer distribution → more information transferred</li>
+            <li><strong>KL Divergence:</strong> Measures difference between teacher and student probability distributions. Used in distillation loss.</li>
+            <li><strong>Types:</strong> Response-based, Feature-based, Relation-based distillation</li>
+          </ul>`
+        },
+        {
+          title: '🔗 Federated Learning (FL)',
+          body: `
+          <div class="def-box"><strong>Federated Learning:</strong> Distributed ML where model is trained across many devices WITHOUT sharing raw data. Only model parameters (weights/gradients) are shared with central server.</div>
+          <ul class="notes-list">
+            <li><strong>FL Workflow:</strong> Server sends model → clients train locally → clients send model updates → server aggregates → repeat</li>
+            <li><strong>FedAvg algorithm:</strong> Aggregates client models by weighted average of parameters</li>
+            <li><strong>Privacy:</strong> Raw data never leaves the device → GDPR-friendly</li>
+          </ul>
+          <div class="table-wrap"><table>
+            <tr><th>Challenge</th><th>Description</th></tr>
+            <tr><td>Non-IID Data</td><td>Data is not identically distributed across clients → <strong>client drift</strong> (models diverge)</td></tr>
+            <tr><td>Communication cost</td><td>Sending model updates every round is expensive</td></tr>
+            <tr><td>Stragglers</td><td>Slow devices delay global aggregation</td></tr>
+            <tr><td>Privacy leakage</td><td>Gradients can leak info about training data</td></tr>
+          </table></div>`
+        }
+      ]
+    }
+  },
+  {
+    id: 5, cls: 'w5',
+    title: 'Mobile Edge Computing (MEC)',
+    topics: 'MEC architecture · Task offloading · Resource allocation · Mobility management',
+    content: {
+      sections: [
+        {
+          title: '📱 Mobile Edge Computing',
+          body: `
+          <div class="def-box"><strong>MEC:</strong> Provides IT and cloud-computing capabilities within the Radio Access Network (RAN) — i.e., at the base station level. Primary goal: Minimize <strong>end-to-end latency</strong>.</div>
+          <ul class="notes-list">
+            <li><strong>Key difference from cloud:</strong> Decentralized (vs cloud's centralized processing)</li>
+            <li><strong>MEC Architecture:</strong> UE (User Equipment) → Radio Access Network → MEC Server (at base station) → Core Network → Cloud</li>
+            <li><strong>Network context awareness:</strong> MEC servers know real-time network conditions (bandwidth, congestion)</li>
+          </ul>`
+        },
+        {
+          title: '⚙️ Task Offloading in MEC',
+          body: `
+          <div class="table-wrap"><table>
+            <tr><th>Offloading Type</th><th>Description</th></tr>
+            <tr><td>Full offloading</td><td>Entire task sent to edge/cloud</td></tr>
+            <tr><td>Partial offloading</td><td>Divisible task — some local, some remote</td></tr>
+            <tr><td>Vertical offloading</td><td>UE → MEC Server → Cloud (upward chain)</td></tr>
+            <tr><td>Horizontal offloading</td><td>MEC Server → neighboring MEC Server</td></tr>
+          </table></div>
+          <ul class="notes-list">
+            <li><strong>Offloading decision:</strong> Based on task computation size, deadline, available bandwidth, energy budget</li>
+            <li><strong>Partial offloading:</strong> Best when application has both offloadable AND non-offloadable components</li>
+            <li><strong>Sequential tasks:</strong> Execute local task first, then offload dependent tasks — cannot parallelize</li>
+            <li><strong>Vertical offloading limitation:</strong> Increased transmission latency (main bottleneck)</li>
+            <li><strong>Horizontal offloading limitation:</strong> Ineffective if neighboring nodes have low computation capability</li>
+          </ul>`
+        },
+        {
+          title: '📡 Resource Allocation & Mobility',
+          body: `
+          <ul class="notes-list">
+            <li><strong>Joint cluster optimization:</strong> In dense MEC — efficiently balances resources across multiple UEs (better than per-UE optimization)</li>
+            <li><strong>DRL for offloading:</strong> Deep RL agents learn offloading policies (Deep Q-Network, Actor-Critic)</li>
+            <li><strong>Mobility management:</strong> UE moves between cells → VM/task migration between MEC servers needed</li>
+            <li><strong>Migration cost:</strong> Transferring VM state has latency/bandwidth overhead → minimize with proactive migration</li>
+            <li><strong>WAN optimization:</strong> Linear programming too slow for real-time decisions → use heuristics or RL</li>
+          </ul>`
+        }
+      ]
+    }
+  },
+  {
+    id: 6, cls: 'w6',
+    title: 'Geo-distributed DCs & Clock Synchronization',
+    topics: 'MPLS · Google B4 · Microsoft SWAN · Lamport clocks · Vector clocks · NTP',
+    content: {
+      sections: [
+        {
+          title: '🌍 Geo-distributed Data Centers',
+          body: `
+          <ul class="notes-list">
+            <li><strong>Why geo-distributed?</strong> Improve availability, reduce latency for users, comply with regional data laws</li>
+            <li><strong>Inter-DC traffic characteristics:</strong> Long-lived, high-volume (backups, VM migration, replication)</li>
+          </ul>
+          <div class="table-wrap"><table>
+            <tr><th>Technology</th><th>Key Feature</th></tr>
+            <tr><td><strong>MPLS</strong></td><td>Label-based forwarding (not IP at every hop). Labels assigned at ingress router. Challenge: lacks global network view → unfair allocation</td></tr>
+            <tr><td><strong>Google B4</strong></td><td>Private WAN using <strong>SDN</strong>. Allocates unused bandwidth to delay-tolerant traffic. Near 100% WAN utilization.</td></tr>
+            <tr><td><strong>Microsoft SWAN</strong></td><td>Focuses on <strong>congestion-free traffic updates</strong> during network reconfigurations</td></tr>
+          </table></div>`
+        },
+        {
+          title: '⏰ Clock Synchronization',
+          body: `
+          <div class="def-box"><strong>Clock skew:</strong> Difference in clock values between two systems. <strong>Clock drift:</strong> Difference in clock speed/rate.</div>
+          <ul class="notes-list">
+            <li><strong>NTP (Network Time Protocol):</strong> Synchronizes clocks using hierarchical stratum levels. Achieves ~millisecond accuracy over WAN.</li>
+            <li><strong>Problem:</strong> Cannot perfectly synchronize physical clocks due to non-zero message latency</li>
+          </ul>
+          <div class="table-wrap"><table>
+            <tr><th>Clock Type</th><th>Lamport Clock</th><th>Vector Clock</th></tr>
+            <tr><td>Captures causality?</td><td>Partial (→ implies happens-before)</td><td>Yes (full causal history)</td></tr>
+            <tr><td>Detects concurrency?</td><td>No</td><td>Yes ✓</td></tr>
+            <tr><td>Memory</td><td>Single integer</td><td>N integers (N = processes)</td></tr>
+            <tr><td>Example</td><td>Event ordering in logs</td><td>Distributed version control</td></tr>
+          </table></div>
+          <ul class="notes-list">
+            <li><strong>Lamport timestamp rule:</strong> On send: increment clock. On receive: max(local, received) + 1</li>
+            <li><strong>Vector clock rule:</strong> Each process maintains array; on event increment own index; on receive: element-wise max then increment</li>
+          </ul>`
+        }
+      ]
+    }
+  },
+  {
+    id: 7, cls: 'w7',
+    title: 'Edge Computing Security & Privacy',
+    topics: 'DDoS · Mirai botnet · Side-channel attacks · k-anonymity · Authentication',
+    content: {
+      sections: [
+        {
+          title: '🔒 Security Threats in Edge Computing',
+          body: `
+          <ul class="notes-list">
+            <li><strong>4 reasons edge is more vulnerable than cloud:</strong>
+              <ol style="padding-left:20px;margin-top:4px">
+                <li><strong>Weak computation power</strong> → can't run heavy security mechanisms</li>
+                <li><strong>Attack unawareness</strong> → no UI on IoT; users don't notice compromises</li>
+                <li><strong>OS & protocol heterogeneity</strong> → many different OSes/protocols, no standard security</li>
+                <li><strong>Coarse-grained access control</strong> → IoT needs fine-grained control but lacks it</li>
+              </ol>
+            </li>
+            <li><strong>Mirai botnet (2016):</strong> Compromised 65,000+ IoT devices in 20 hours via weak authentication → launched DDoS → took down 178,000+ domains</li>
+          </ul>`
+        },
+        {
+          title: '💣 Attack Types & Defenses',
+          body: `
+          <div class="table-wrap"><table>
+            <tr><th>Attack</th><th>Description</th><th>Defense</th></tr>
+            <tr><td>DDoS</td><td>Overwhelm service with traffic → prevent legitimate use</td><td>Statistics-based detection (traffic patterns), rate limiting</td></tr>
+            <tr><td>Zero-day DDoS</td><td>Exploits unknown vulnerabilities; hard to detect</td><td>Anomaly detection, ML-based</td></tr>
+            <tr><td>Side-channel attack</td><td>Exploit indirect info (power consumption, timing, EM)</td><td>Noise injection, constant-time algorithms</td></tr>
+            <tr><td>Malware injection</td><td>Malicious firmware on edge device (device-side)</td><td>Code signing, firmware verification</td></tr>
+            <tr><td>SQL injection</td><td>Server-side; inject SQL via input fields</td><td>Input sanitization, parameterized queries</td></tr>
+            <tr><td>Dictionary/Brute-force</td><td>Try common passwords systematically</td><td>Account lockout, MFA, strong password policy</td></tr>
+          </table></div>`
+        },
+        {
+          title: '🔐 Privacy Protection Techniques',
+          body: `
+          <div class="table-wrap"><table>
+            <tr><th>Technique</th><th>How It Works</th></tr>
+            <tr><td><strong>k-anonymity</strong></td><td>Each record is indistinguishable from at least k-1 others (generalization + suppression)</td></tr>
+            <tr><td><strong>Differential Privacy</strong></td><td>Add calibrated noise so individual records can't be identified</td></tr>
+            <tr><td><strong>Data Perturbation</strong></td><td>Add noise to data before sending</td></tr>
+            <tr><td><strong>Tokenization</strong></td><td>Replace sensitive values with tokens</td></tr>
+            <tr><td><strong>Encryption</strong></td><td>Protect data in transit/rest; doesn't ensure indistinguishability</td></tr>
+          </table></div>
+          <ul class="notes-list">
+            <li><strong>Access control models for IoT:</strong> Need fine-grained (who, what sensor, what action, when, how) vs cloud's simple read/write/execute model</li>
+            <li><strong>Authentication in edge:</strong> OAuth 2.0, JWT tokens, certificate-based (PKI) — challenge: edge devices have limited crypto capability</li>
+          </ul>`
+        }
+      ]
+    }
+  },
+  {
+    id: 8, cls: 'w8',
+    title: 'Resource Allocation & Reinforcement Learning',
+    topics: 'CEC computing · VM pricing · MDP · Q-Learning · Network virtualization',
+    content: {
+      sections: [
+        {
+          title: '☁️ Collaborative Edge-Cloud (CEC) Computing',
+          body: `
+          <div class="def-box"><strong>CEC:</strong> Edge nodes with limited resources cooperate with cloud to meet user demands. Edge handles normal load; cloud handles overflow.</div>
+          <div class="table-wrap"><table>
+            <tr><th>Pricing Model</th><th>Best For</th><th>Key Feature</th></tr>
+            <tr><td><strong>On-demand</strong></td><td>Unpredictable workloads</td><td>Fixed price, pay per use, no commitment</td></tr>
+            <tr><td><strong>Reserved</strong></td><td>Steady, predictable 1-year workloads</td><td>Pay upfront, significant discount</td></tr>
+            <tr><td><strong>Spot</strong></td><td>Flexible, fault-tolerant tasks</td><td>Cheapest but can be interrupted anytime</td></tr>
+          </table></div>
+          <ul class="notes-list">
+            <li><strong>Standby cost:</strong> Always incurred even when VM is idle (power, maintenance)</li>
+            <li><strong>Goal:</strong> Minimize cumulative operational cost while meeting user QoS demands</li>
+            <li><strong>Strategy:</strong> If edge VM standby cost high + utilization low → shift more to cloud</li>
+          </ul>`
+        },
+        {
+          title: '🎮 Reinforcement Learning for Resource Allocation',
+          body: `
+          <div class="def-box"><strong>MDP (Markov Decision Process):</strong> State, Action, Reward, Transition. <strong>Markov property:</strong> Next state depends ONLY on current state + action (not history).</div>
+          <div class="table-wrap"><table>
+            <tr><th>RL Algorithm</th><th>Key Feature</th></tr>
+            <tr><td><strong>Q-Learning</strong></td><td>Off-policy; updates Q-values using <em>maximum</em> future reward. Q(s,a) = R + γ·max Q(s',a')</td></tr>
+            <tr><td><strong>SARSA</strong></td><td>On-policy; uses next action actually taken</td></tr>
+            <tr><td><strong>DDPG</strong></td><td>Actor-Critic for continuous action spaces; used for private cloud resource allocation</td></tr>
+            <tr><td><strong>DQN</strong></td><td>Deep Q-Network; neural network approximates Q-values</td></tr>
+          </table></div>
+          <ul class="notes-list">
+            <li><strong>Incorrect reward → sub-optimal policy:</strong> Agent learns wrong objective</li>
+            <li><strong>Policy Gradient:</strong> Directly optimizes policy (not Q-values)</li>
+          </ul>`
+        },
+        {
+          title: '🌐 Network Virtualization (DC Networks)',
+          body: `
+          <ul class="notes-list">
+            <li><strong>Traditional DC problem:</strong> Tenant in "silos", poor utilization, can't expand easily</li>
+            <li><strong>NVP (Network Virtualization Platform):</strong> VMware's approach (from Nicira startup) — virtualizes network in multi-tenant DCs</li>
+            <li><strong>Benefits:</strong> Each tenant gets isolated virtual network; no wasted VLANs; flexible topology</li>
+            <li><strong>VM Migration:</strong> Move running VM from one physical server to another with minimal downtime (live migration)</li>
+            <li><strong>Use case:</strong> Balance load, reduce energy, hardware maintenance, fault recovery</li>
+          </ul>`
+        }
+      ]
+    }
+  }
+];
+
+// ─── ALL MCQ QUESTIONS ──────────────────────────────────────────────
+
+const ALL_MCQ = [
+  // WEEK 1
+  {week:1, q:"Which is NOT a characteristic of cloud computing?", opts:["On-demand self-service","Resource pooling","Dedicated hardware per user","Measured service"], ans:2, exp:"Dedicated hardware per user contradicts cloud's shared resource pooling model."},
+  {week:1, q:"The primary motivation for edge computing is:", opts:["Replacing cloud data centers","Reducing latency and bandwidth usage","Increasing storage capacity","Eliminating IoT devices"], ans:1, exp:"Edge computing moves compute closer to data sources to reduce latency and bandwidth consumption."},
+  {week:1, q:"Fog computing is primarily associated with which company?", opts:["IBM","Microsoft","Cisco","Amazon"], ans:2, exp:"Fog computing is Cisco's model — hierarchical, deployed at network edge between devices and cloud."},
+  {week:1, q:"In a three-level offloading scheme, tasks are processed at:", opts:["Cloud only","Edge only","Device → Edge → Cloud collaboratively","Device → Cloud directly"], ans:2, exp:"Three-level offloading uses all three tiers collaboratively to reduce service time."},
+  {week:1, q:"PUE stands for:", opts:["Power Utilization Efficiency","Power Usage Effectiveness","Processing Unit Efficiency","Peak Usage Energy"], ans:1, exp:"PUE = Total Facility Power / IT Equipment Power. Lower = better efficiency. Google achieves ~1.11."},
+  {week:1, q:"What does a cloudlet provide?", opts:["Remote cloud storage","Small data center 1-hop from mobile users","VPN access","IoT protocol translation"], ans:1, exp:"A cloudlet is a small, trusted data center within 1 network hop of mobile users, providing cloud-like compute."},
+
+  // WEEK 2
+  {week:2, q:"Which of the following best explains why sensitive instructions executing in user mode break full virtualization?", opts:["They reduce CPU scheduling efficiency","They bypass hypervisor resource accounting","They modify privileged processor state without trapping","They consume excessive memory"], ans:2, exp:"Sensitive instructions modify privileged state. Without trapping, the hypervisor cannot intercept and control them."},
+  {week:2, q:"Para-virtualization requires:", opts:["Hardware VT extensions","Modified guest OS","Unmodified guest OS","Binary translation"], ans:1, exp:"Para-virtualization modifies the guest OS to make hypercalls instead of privileged instructions."},
+  {week:2, q:"Which security ring hosts user applications in x86?", opts:["Ring 0","Ring 1","Ring 2","Ring 3"], ans:3, exp:"Ring 3 has least privilege — used for user applications. Ring 0 is for OS kernel."},
+  {week:2, q:"Type-1 hypervisor runs:", opts:["On top of host OS","Directly on hardware, replacing the OS","Inside a container","As a user-space application"], ans:1, exp:"Type-1 (bare-metal) hypervisors run directly on hardware with no underlying OS."},
+  {week:2, q:"OS-level virtualization (containers) is TRUE in that:", opts:["Each container runs its own kernel","No hypervisor is required","It emulates hardware instructions","It requires VT-x support"], ans:1, exp:"OS-level virtualization works at the kernel level — no hypervisor needed; containers share the host kernel."},
+  {week:2, q:"Which technique enables running a program compiled for a different CPU architecture without recompilation?", opts:["Emulation","OS-level virtualization","Full virtualization","Containerization"], ans:0, exp:"Emulation translates instructions from one architecture to another at runtime."},
+  {week:2, q:"Containers differ from VMs in that containers:", opts:["Include a full guest OS","Share the host OS kernel","Require a hypervisor","Have slower startup times"], ans:1, exp:"Containers share the host OS kernel, making them lightweight. VMs each have their own full OS."},
+  {week:2, q:"Which VMM module acts as the entry point?", opts:["Allocator","Interpreter","Dispatcher","Scheduler"], ans:2, exp:"The Dispatcher is the entry point of a VMM; it reroutes instructions issued by VM instances."},
+
+  // WEEK 3
+  {week:3, q:"Kubernetes is best described as:", opts:["A container runtime","A virtual machine manager","An open-source container orchestration platform","A cloud service provider"], ans:2, exp:"Kubernetes automates deployment, scaling, and management of containerized applications."},
+  {week:3, q:"'Kubernetes' means in Greek:", opts:["Helmsman or Captain of a ship","Cluster","Controller","Distributed system"], ans:0, exp:"Kubernetes comes from Greek meaning helmsman, symbolizing control and navigation."},
+  {week:3, q:"Which Kubernetes component is the ONLY one that directly interacts with etcd?", opts:["API Server","Scheduler","Controller Manager","Kubelet"], ans:0, exp:"The API server is the gateway to the control plane and the only component that reads/writes to etcd."},
+  {week:3, q:"Which component assigns Pods to Nodes?", opts:["Kubelet","Controller Manager","Scheduler","Kube-proxy"], ans:2, exp:"The Kubernetes Scheduler selects the best node for a Pod based on resources, constraints, and policies."},
+  {week:3, q:"The CAP theorem states that a distributed system can guarantee at most:", opts:["All three: C, A, P","Two of three: C, A, P","Only one of three","None — all must be sacrificed"], ans:1, exp:"CAP: Consistency, Availability, Partition Tolerance — only 2 guaranteed simultaneously. Since partitions always occur, choose CP or AP."},
+  {week:3, q:"Apache Cassandra follows which CAP model?", opts:["CP (Consistent + Partition Tolerant)","CA (Consistent + Available)","AP (Available + Partition Tolerant)","Full CAP"], ans:2, exp:"Cassandra is an AP system — it prioritizes availability and partition tolerance over strict consistency."},
+  {week:3, q:"In consistent hashing, when a new node joins the ring:", opts:["All data must be rehashed","Only a fraction of keys need to be remapped","All keys are redistributed uniformly","The ring is destroyed and rebuilt"], ans:1, exp:"Consistent hashing minimizes reshuffling — only keys that were owned by the new node's predecessor need remapping."},
+  {week:3, q:"Vector clocks are better than Lamport clocks because they:", opts:["Use less memory","Are faster","Can detect concurrent events","Synchronize physical clocks"], ans:2, exp:"Vector clocks capture full causal history, enabling detection of both causality AND concurrency. Lamport clocks only partially capture causality."},
+
+  // WEEK 4
+  {week:4, q:"Which of the following is NOT a model compression technique?", opts:["Parameter pruning","Knowledge distillation","Gradient descent","Low-rank factorization"], ans:2, exp:"Gradient descent is an optimization algorithm for training, not a compression technique."},
+  {week:4, q:"Why are 'soft targets' preferred over hard targets in Knowledge Distillation?", opts:["They reduce model size","They capture inter-class relationships","They eliminate overfitting","They require less computation"], ans:1, exp:"Soft targets show relative probabilities among classes, revealing similarity (e.g., cat more like dog than car). Hard labels lose this information."},
+  {week:4, q:"In Federated Learning, what is shared with the central server?", opts:["Raw data","Feature vectors","Model parameters","Labels only"], ans:2, exp:"FL preserves privacy by keeping raw data on devices. Only model updates (weights/gradients) are sent to the server."},
+  {week:4, q:"Non-IID data in FL causes which problem?", opts:["Faster convergence","Client drift","Model overfitting","Reduced privacy"], ans:1, exp:"Non-IID (heterogeneous) data causes each client's model to move in different directions — this is client drift."},
+  {week:4, q:"Which FL algorithm aggregates client models by weighted average?", opts:["FedProx","FedAvg","SCAFFOLD","MOON"], ans:1, exp:"FedAvg (Federated Averaging) by McMahan et al. is the standard FL aggregation algorithm using weighted parameter averaging."},
+  {week:4, q:"In Knowledge Distillation, which component contains richer class similarity information?", opts:["Hard labels","One-hot targets","Softmax probabilities with temperature","Ground truth labels"], ans:2, exp:"Softmax with temperature T>1 produces softer distributions that encode relative class similarities."},
+
+  // WEEK 5
+  {week:5, q:"MEC servers are primarily deployed to optimize:", opts:["Storage capacity","Computation accuracy","Network throughput only","End-to-end latency"], ans:3, exp:"MEC's primary goal is reducing end-to-end latency by placing compute at the network edge (RAN)."},
+  {week:5, q:"Which feature does NOT belong to MEC?", opts:["Low latency service","Proximity to end users","Centralized processing","Network context awareness"], ans:2, exp:"MEC is decentralized by definition. Centralized processing belongs to traditional cloud computing."},
+  {week:5, q:"Partial task offloading is most suitable when:", opts:["Tasks are indivisible","All components are independent","Applications have both offloadable and non-offloadable components","Network bandwidth is zero"], ans:2, exp:"Partial offloading works when some parts of a task must stay local (e.g., input capture) while others can be offloaded."},
+  {week:5, q:"Vertical offloading primarily suffers from:", opts:["Low energy efficiency","Increased transmission latency","Limited scalability","Resource fragmentation"], ans:1, exp:"Vertical offloading sends data up the chain (device→edge→cloud), each hop adding transmission delay."},
+  {week:5, q:"In a dense MEC environment, joint cluster optimization is preferred because it:", opts:["Reduces VM migration cost only","Guarantees minimum latency for single UE","Eliminates communication overhead","Efficiently balances resources across multiple UEs"], ans:3, exp:"Joint optimization considers all UEs together, achieving better overall resource utilization than per-UE optimization."},
+
+  // WEEK 6
+  {week:6, q:"Why do cloud providers deploy geo-distributed data centers?", opts:["To reduce hardware cost","To improve availability, reduce latency, and meet local data laws","To simplify network topology","To avoid replication"], ans:1, exp:"Geo-distribution ensures low latency for users worldwide, fault tolerance, and compliance with regional data regulations."},
+  {week:6, q:"Inter-data-center traffic is characterized as:", opts:["Negligible compared to client traffic","Short-lived and low volume","Long-lived and carries more data","Only control traffic"], ans:2, exp:"DC-to-DC traffic (backups, VM migration, replication) involves long-duration, high-volume transfers."},
+  {week:6, q:"MPLS forwarding decisions are primarily based on:", opts:["Packet headers at every router","IP addresses only","MAC addresses","Labels assigned at ingress router"], ans:3, exp:"MPLS uses short labels to forward packets efficiently. Labels are assigned at the ingress router and removed at egress."},
+  {week:6, q:"Google B4 uses which networking technology?", opts:["Circuit switching","Software-Defined Networking (SDN)","Token ring","ATM"], ans:1, exp:"Google B4 uses centralized SDN controllers to dynamically manage traffic across its private WAN."},
+  {week:6, q:"Microsoft SWAN primarily focuses on:", opts:["Reducing packet size","Multicast optimization","Faster routing convergence","Congestion-free traffic updates"], ans:3, exp:"SWAN schedules WAN traffic updates to prevent congestion during network reconfigurations."},
+  {week:6, q:"Clock skew refers to:", opts:["Difference in clock values","Difference in clock speed","Packet delay variation","Message loss"], ans:0, exp:"Clock skew = two clocks showing different times. Clock drift = clocks running at different speeds."},
+
+  // WEEK 7
+  {week:7, q:"Why are edge servers more vulnerable than cloud servers?", opts:["They use stronger protocols","They have weaker computation power","They are centrally managed","They are physically isolated"], ans:1, exp:"Edge servers have limited resources, making it difficult to implement strong security mechanisms like cloud servers."},
+  {week:7, q:"The Mirai botnet exploited which vulnerability?", opts:["SQL injection","Weak authentication on IoT devices","Buffer overflow in cloud","Side-channel attack"], ans:1, exp:"Mirai exploited default/weak credentials on IoT devices to compromise 65,000+ devices and launch DDoS attacks."},
+  {week:7, q:"A DDoS attack mainly aims to:", opts:["Steal confidential data","Modify firmware","Perform privilege escalation","Prevent legitimate service usage"], ans:3, exp:"DDoS (Distributed Denial of Service) overwhelms the target with traffic to prevent legitimate users from accessing it."},
+  {week:7, q:"Which method protects sensitive data by making records indistinguishable among k users?", opts:["Encryption","Tokenization","k-anonymity","Differential routing"], ans:2, exp:"k-anonymity ensures each record is indistinguishable from at least k-1 others through generalization and suppression."},
+  {week:7, q:"Zero-day DDoS attacks are difficult to defend because:", opts:["They exploit unknown vulnerabilities","They rely on password guessing","They use encrypted packets","They require physical access"], ans:0, exp:"Zero-day attacks exploit vulnerabilities that are unknown to defenders, so no signature or patch exists."},
+  {week:7, q:"Dictionary attacks are also known as:", opts:["Brute-force attacks","Side-channel attacks","Replay attacks","Injection attacks"], ans:0, exp:"Dictionary attacks systematically try common passwords from a predefined list — a type of brute-force attack."},
+  {week:7, q:"Malware injection attacks are more common in edge than cloud because:", opts:["Edge devices are not networked","Edge devices are resource-constrained and interconnected","Cloud lacks firewalls","Edge uses wired protocols"], ans:1, exp:"Limited security capabilities combined with wide connectivity makes edge devices easy targets for malware injection."},
+
+  // WEEK 8
+  {week:8, q:"The main motivation for CEC computing is:", opts:["Unlimited storage at edge nodes","To eliminate cloud computing","Limited computation and storage at edge nodes","Reduce network security risks"], ans:2, exp:"Edge nodes have limited resources. CEC allows them to rent additional resources from cloud when demand exceeds capacity."},
+  {week:8, q:"Which VM cost is always incurred even when idle?", opts:["Computing cost","Standby cost","Cloud rental cost","Migration cost"], ans:1, exp:"Standby cost (power + maintenance) is always paid for provisioned VMs regardless of utilization."},
+  {week:8, q:"For a steady, predictable 1-year workload, which pricing minimizes cost?", opts:["On-demand","Spot","Edge-only","Reserved"], ans:3, exp:"Reserved instances offer significant discounts for long-term commitments. Best for predictable, steady workloads."},
+  {week:8, q:"The Markov property states:", opts:["All past states affect future","Next state depends only on current state and action","Rewards must be discounted","Policies must be deterministic"], ans:1, exp:"Markov property: P(s'|s,a,s_{t-1},...) = P(s'|s,a). Only the current state and action matter for transitions."},
+  {week:8, q:"Q-Learning updates using:", opts:["Next action actually taken","Full episode return","Maximum possible future Q-value","Policy gradient"], ans:2, exp:"Q-Learning is off-policy: Q(s,a) ← R + γ · max_a' Q(s',a'). Uses maximum future Q-value regardless of actual policy."},
+  {week:8, q:"If edge VM standby cost is high and utilization is low, the best strategy is:", opts:["Increase edge capacity","Shift more load to cloud","Ignore standby cost","Always use spot instances"], ans:1, exp:"Shifting load to cloud reduces the number of idle edge VMs, decreasing standby cost."},
+  {week:8, q:"Defining the reward incorrectly in an MDP-based system leads to:", opts:["Faster convergence","Lower energy usage","Sub-optimal policy learning","Better cloud utilization"], ans:2, exp:"The RL agent optimizes whatever objective the reward encodes. A wrong reward → wrong objective → sub-optimal policy."},
+];
+
+// ─── IMPORTANT QUESTIONS DATA ────────────────────────────────────────────
+
+const IMP_QUESTIONS = [
+  {q:"Define Edge Computing. How does it differ from Cloud Computing?", tags:["W1","Define","5-mark"],
+   ans:"Edge Computing moves computation and data storage closer to data sources (IoT devices, sensors) rather than centralized cloud data centers. Key differences: (1) <strong>Latency:</strong> Edge achieves <10ms vs cloud's 50-200ms RTT. (2) <strong>Location:</strong> Edge = geographically distributed near devices; Cloud = centralized remote DCs. (3) <strong>Bandwidth:</strong> Edge processes locally, reduces backhaul; Cloud requires all data sent to DC. (4) <strong>Privacy:</strong> Edge keeps sensitive data local; Cloud sends data offsite. (5) <strong>Scale:</strong> Edge = limited resources per node; Cloud = near-unlimited pooled resources. Three-tier architecture: IoT Devices → Edge Nodes → Cloud."},
+  {q:"Compare Type 1 and Type 2 Hypervisors with examples.", tags:["W2","Compare","4-mark"],
+   ans:"<strong>Type 1 (Bare-metal):</strong> Runs directly on hardware, replaces the OS. Higher performance (direct HW access). Used in data centers. Examples: VMware ESXi, Microsoft Hyper-V, Xen. Pros: No host OS overhead, better security isolation. <br><br><strong>Type 2 (Hosted):</strong> Runs on top of host OS like a regular application. Easier installation. Used by developers. Examples: VMware Workstation, Oracle VirtualBox. Pros: Easy to install and use, can leverage host OS drivers."},
+  {q:"Explain the CAP Theorem. Which model does Cassandra follow and why?", tags:["W3","CAP","4-mark"],
+   ans:"<strong>CAP Theorem</strong> (Brewer's theorem): A distributed system can guarantee at most 2 of 3 properties: (C) Consistency — all nodes see same data simultaneously; (A) Availability — every request gets a response; (P) Partition Tolerance — system continues despite network partitions. Since network partitions are unavoidable, systems must choose between CP or AP. <br><br><strong>Cassandra follows AP</strong>: It prioritizes Availability and Partition Tolerance. During a network partition, Cassandra continues serving reads/writes (eventual consistency) rather than rejecting requests to maintain consistency. This makes it ideal for IoT and edge storage where uptime matters more than immediate consistency."},
+  {q:"What is Knowledge Distillation? Explain the role of temperature (T).", tags:["W4","Define","4-mark"],
+   ans:"<strong>Knowledge Distillation:</strong> A model compression technique where a large 'teacher' model transfers knowledge to a smaller 'student' model. The student learns from teacher's soft output probabilities (soft targets) rather than hard one-hot labels. Soft targets capture inter-class similarity (e.g., 'cat' is more similar to 'dog' than to 'car'), providing richer training signal. <br><br><strong>Temperature T:</strong> Applied to softmax to control probability distribution softness. Higher T → softer distribution → more information about class similarities transferred. Lower T → approaches hard targets. During training, T>1 is used; during inference, T=1 (normal softmax)."},
+  {q:"What is Federated Learning? List its main challenges.", tags:["W4","FL","4-mark"],
+   ans:"<strong>Federated Learning:</strong> A distributed ML paradigm where a global model is trained across multiple clients (edge devices) without sharing raw data. Only model parameters/gradients are sent to the central server. Process: (1) Server sends model, (2) Clients train locally, (3) Clients send updates, (4) Server aggregates (FedAvg), (5) Repeat. <br><br><strong>Challenges:</strong> (1) <em>Non-IID data</em> → Client drift (models diverge in different directions); (2) <em>Communication overhead</em> → Sending model updates every round; (3) <em>Stragglers</em> → Slow devices delay aggregation; (4) <em>Privacy leakage</em> → Gradients can leak private data information; (5) <em>Heterogeneous devices</em> → Different compute capabilities."},
+  {q:"Describe full offloading vs partial offloading in MEC. When is each preferred?", tags:["W5","MEC","4-mark"],
+   ans:"<strong>Full Offloading:</strong> Entire task is sent to MEC server. Preferred when: the task is computationally intensive, the device is energy-constrained, the task has no latency-sensitive local components. <br><br><strong>Partial Offloading:</strong> Task is split — some components run locally, others are offloaded. Preferred when: the application has both offloadable and non-offloadable parts (e.g., data capture must be local), fine-grained control is needed over latency-energy tradeoff. For sequential tasks (A→B→C): execute task A locally first, then offload B and C — cannot parallelize due to dependency."},
+  {q:"Compare Lamport clocks and Vector clocks. Which is better and why?", tags:["W6","Clocks","4-mark"],
+   ans:"<strong>Lamport Clock:</strong> Single integer counter per process. Rule: increment on every event; on message receive, set to max(local, received)+1. Can order events causally (if a→b then L(a)<L(b)) but converse NOT true — L(a)<L(b) doesn't imply a happened before b. Cannot detect concurrent events. <br><br><strong>Vector Clock:</strong> Array of N integers (N = processes). Each process tracks all others. Can determine: (1) a happened before b, (2) b happened before a, or (3) events are concurrent. <br><br><strong>Vector clocks are better</strong> because they fully capture causality AND detect concurrency. Lamport clocks give only partial ordering. Trade-off: Vector clocks use O(N) memory vs O(1) for Lamport."},
+  {q:"List and explain the 4 security vulnerabilities unique to edge computing.", tags:["W7","Security","4-mark"],
+   ans:"(1) <strong>Weak Computation Power:</strong> Edge servers have fewer resources than cloud → cannot run sophisticated security mechanisms (IDS, heavy encryption) → more vulnerable to attacks that cloud easily repels. <br>(2) <strong>Attack Unawareness:</strong> Most IoT devices have no UI. Users cannot easily detect if a device has been compromised. Silent compromise enables prolonged attacks. <br>(3) <strong>OS and Protocol Heterogeneity:</strong> IoT ecosystem has hundreds of different OSes, communication protocols (Zigbee, Z-Wave, MQTT, etc.), no security standard → large attack surface with inconsistent patching. <br>(4) <strong>Coarse-grained Access Control:</strong> Traditional read/write/execute model insufficient for IoT. Need fine-grained control (who, which sensor, what action, when, how) but current models don't support this."},
+  {q:"Explain the three cloud pricing models for CEC and when each is optimal.", tags:["W8","Pricing","3-mark"],
+   ans:"(1) <strong>On-demand:</strong> Pay per use at fixed time granularity. No commitment. Flexible but expensive. Optimal for: unpredictable, bursty workloads. <br>(2) <strong>Reserved:</strong> Pay reservation fee upfront for contracted period (1-3 years). Significant discount. Optimal for: steady, predictable long-term workloads (manufacturing, enterprise apps). <br>(3) <strong>Spot:</strong> Use spare cloud capacity at lowest price. Can be interrupted anytime by provider. Cheapest. Optimal for: fault-tolerant, flexible batch jobs, non-time-critical tasks (data analytics, rendering)."},
+  {q:"What is the Markov Decision Process (MDP)? Define all components.", tags:["W8","RL","4-mark"],
+   ans:"<strong>MDP</strong> is the mathematical framework for sequential decision-making under uncertainty. Components: <br><strong>S (State):</strong> Complete description of environment at time t (e.g., current VM utilization, pending requests). <br><strong>A (Action):</strong> Set of decisions agent can take (e.g., allocate to edge VM, rent from cloud). <br><strong>R (Reward):</strong> Scalar feedback signal after taking action in a state (e.g., -cost, +QoS score). <br><strong>P (Transition):</strong> Probability P(s'|s,a) of reaching state s' from s with action a. <br><strong>Markov Property:</strong> P(s_{t+1}|s_t,a_t,s_{t-1},...) = P(s_{t+1}|s_t,a_t) — future depends ONLY on current state, not history. <br><strong>Policy π:</strong> Mapping from states to actions. Goal: find optimal policy maximizing cumulative discounted reward."},
+  {q:"Describe consistent hashing with replication factor RF=3.", tags:["W3","Cassandra","3-mark"],
+   ans:"Consistent hashing maps both data keys and nodes onto a virtual ring using a hash function. Process: (1) All nodes placed on ring at evenly-spaced positions (tokens). (2) For any key, the coordinator hashes it to get a token. (3) Walk clockwise from that token until 3 distinct nodes are encountered — these are the RF=3 replicas. Advantage: When a node joins/leaves, only O(1/N) fraction of keys need remapping (unlike uniform hashing which remaps everything). This minimizes data redistribution cost in a dynamic cluster."},
+  {q:"Explain SDN architecture and how Google B4 applies it.", tags:["W6","SDN","3-mark"],
+   ans:"<strong>SDN Architecture:</strong> Separates control plane (routing decisions, managed by centralized SDN controller) from data plane (packet forwarding, done by switches). Southbound API (OpenFlow) connects controller to switches. Northbound API exposes network to applications. Benefits: Programmable, centralized view, rapid reconfiguration. <br><br><strong>Google B4:</strong> Google's private WAN using SDN. Uses centralized SDN controllers to dynamically allocate bandwidth. Allows latency-sensitive services (search, ads) to use reserved bandwidth first; delay-tolerant services (backup, replication) use remaining bandwidth. Achieves near 100% WAN utilization vs 30-40% in traditional networks."},
+];
+
+// ─── MOCK TEST QUESTIONS (30) ─────────────────────────────────────────────────
+
+const MOCK_TEST = [
+  {q:"Edge computing primarily addresses which limitation of cloud computing?",opts:["High hardware cost","High latency and bandwidth consumption","Limited storage capacity","Weak security"],ans:1},
+  {q:"Which tier is NOT part of the standard Edge Computing three-tier architecture?",opts:["IoT devices","Edge nodes","Core Internet routers","Cloud data centers"],ans:2},
+  {q:"Which Type-1 hypervisor divides virtual machines into partitions?",opts:["VirtualBox","VMware Workstation","Microsoft Hyper-V","QEMU"],ans:2},
+  {q:"Para-virtualization differs from full virtualization in that it:",opts:["Runs unmodified guest OS","Requires hardware VT-x/AMD-V","Modifies the guest OS to make hypercalls","Uses binary translation"],ans:2},
+  {q:"Kubernetes' primary function is:",opts:["Running containers on a single machine","Container image storage","Container orchestration at scale","Network packet routing"],ans:2},
+  {q:"Which Kubernetes object provides a stable IP address and load balancing for Pods?",opts:["Pod","Deployment","Service","ConfigMap"],ans:2},
+  {q:"The CAP theorem was proposed by:",opts:["Leslie Lamport","Eric Brewer","Jeff Dean","Werner Vogels"],ans:1},
+  {q:"Cassandra is classified as an ___ system under CAP:",opts:["CP","CA","AP","All three"],ans:2},
+  {q:"In Knowledge Distillation, increasing temperature T:",opts:["Makes the output distribution sharper","Produces harder probability assignments","Produces softer probability distributions with more information","Reduces the student model size"],ans:2},
+  {q:"FedAvg aggregation combines client updates by:",opts:["Taking the median","Selecting the best client model","Weighted averaging of model parameters","Majority voting"],ans:2},
+  {q:"MEC stands for:",opts:["Managed Edge Cluster","Mobile Edge Computing","Multi-Edge Computing","Micro Edge Controller"],ans:1},
+  {q:"Horizontal offloading in MEC refers to:",opts:["UE offloading to cloud","MEC server offloading to a neighboring MEC server","UE offloading to a MEC server","Cloud offloading to UE"],ans:1},
+  {q:"Which WAN technology uses short labels assigned at ingress for forwarding?",opts:["BGP","OSPF","MPLS","RIP"],ans:2},
+  {q:"Google B4 achieves high WAN utilization by:",opts:["Using MPLS fast-reroute","Applying packet compression","SDN-based dynamic bandwidth allocation","Dedicated circuits per service"],ans:2},
+  {q:"Clock drift means:",opts:["Two clocks showing different times","Two clocks running at different speeds","A clock stopped","A clock jumping forward"],ans:1},
+  {q:"Vector clocks require ___ storage per process:",opts:["O(1) — single integer","O(N) — one integer per process","O(log N)","O(N²)"],ans:1},
+  {q:"The Mirai botnet attack in 2016 primarily exploited:",opts:["SQL injection vulnerabilities","Weak/default authentication on IoT devices","Side-channel timing attacks","Zero-day OS exploits"],ans:1},
+  {q:"k-anonymity ensures that each record is indistinguishable from at least:",opts:["k records","k-1 other records","k+1 records","2k records"],ans:1},
+  {q:"Which pricing model is cheapest but least reliable?",opts:["On-demand","Reserved","Spot","Subscription"],ans:2},
+  {q:"The Markov property states that the next state depends on:",opts:["All past states","All past states and actions","Only the current state and action","Only the previous state"],ans:2},
+  {q:"Q-Learning uses ___ to update Q-values:",opts:["The actual next action taken (SARSA)","Maximum future Q-value","Average future Q-value","Monte Carlo return"],ans:1},
+  {q:"Which of the following is a model compression technique?",opts:["Gradient descent","Backpropagation","Parameter pruning","Adam optimizer"],ans:2},
+  {q:"Non-IID data in Federated Learning causes:",opts:["Faster global model convergence","Client drift — models diverge in different directions","Improved privacy guarantees","Reduced communication cost"],ans:1},
+  {q:"An IoT gateway primarily provides:",opts:["Terminal UI for users","Protocol translation between devices and cloud","Long-term data archival","Physical security"],ans:1},
+  {q:"Which Kubernetes component is responsible for ensuring the desired number of replicas is running?",opts:["Scheduler","API Server","Controller Manager","Kubelet"],ans:2},
+  {q:"PUE value of 1.0 means:",opts:["100% overhead waste","The worst possible efficiency","All facility power goes to IT equipment (ideal)","50% efficiency"],ans:2},
+  {q:"Full virtualization uses ___ to handle sensitive instructions without modifying guest OS:",opts:["Hypercalls","Direct execution","Binary translation / HW-assisted virtualization","OS patching"],ans:2},
+  {q:"Which type of edge architecture uses large on-premise systems supplemented by cloud for analytics?",opts:["Thin/Micro Edge","Fog-only","Thick Edge + Cloud (Edge-only model)","MEC"],ans:2},
+  {q:"In CEC, if edge demand exceeds edge capacity, the excess workload is:",opts:["Rejected","Queued indefinitely","Sent to cloud","Processed at reduced speed"],ans:2},
+  {q:"A side-channel attack exploits:",opts:["Network packets","Direct memory access","Indirect information (power, timing, EM emissions)","Firmware vulnerabilities"],ans:2},
+];
+
+// ══════════════ RENDER FUNCTIONS ════════════════════════
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('nav button').forEach((b,i) => {
+    b.classList.toggle('active', ['notes','iq','mcq','mock'][i] === id);
+  });
+  if (id === 'iq' && !document.getElementById('iq-content').children.length) renderIQ();
+  if (id === 'notes' && !document.getElementById('week-grid').children.length) renderWeekGrid();
+}
+
+// ─── NOTES ───────────────────────────────────────────────────────────
+
+function renderWeekGrid() {
+  const grid = document.getElementById('week-grid');
+  WEEKS.forEach(w => {
+    const card = document.createElement('div');
+    card.className = `week-card ${w.cls}`;
+    card.innerHTML = `
+      <div class="week-num">WEEK ${w.id}</div>
+      <div class="week-title">${w.title}</div>
+      <div class="week-topics">${w.topics}</div>
+      <div class="badge badge-blue">${w.content.sections.length} topics →</div>
+    `;
+    card.onclick = () => showWeekDetail(w.id);
+    grid.appendChild(card);
+  });
+}
+
+function showWeekDetail(id) {
+  const week = WEEKS.find(w => w.id === id);
+  document.getElementById('notes-home').style.display = 'none';
+  document.getElementById('notes-detail').style.display = 'block';
+  const container = document.getElementById('week-content');
+  container.innerHTML = `
+    <div class="page-title">// Week ${week.id}</div>
+    <h1>${week.title}</h1>
+  `;
+  week.content.sections.forEach((sec, i) => {
+    const ns = document.createElement('div');
+    ns.className = 'note-section';
+    ns.innerHTML = `
+      <div class="note-section-header" onclick="toggleNoteSection(this)">
+        <span>${sec.title}</span>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="note-section-body ${i===0?'open':''}">${sec.body}</div>
+    `;
+    if (i === 0) ns.querySelector('.chevron').classList.add('open');
+    container.appendChild(ns);
+  });
+}
+
+function toggleNoteSection(header) {
+  const body = header.nextElementSibling;
+  const chevron = header.querySelector('.chevron');
+  body.classList.toggle('open');
+  chevron.classList.toggle('open');
+}
+
+function showWeekGrid() {
+  document.getElementById('notes-home').style.display = 'block';
+  document.getElementById('notes-detail').style.display = 'none';
+}
+
+// ─── IMPORTANT QUESTIONS ─────────────────────────────────────────────
+
+function renderIQ() {
+  const container = document.getElementById('iq-content');
+  const grid = document.createElement('div');
+  grid.className = 'iq-grid';
+  IMP_QUESTIONS.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'iq-item';
+    div.innerHTML = `
+      <button class="toggle-ans" onclick="toggleAns(this, event)">Show Ans</button>
+      <div class="iq-q">Q${i+1}. ${item.q}</div>
+      <div class="iq-tags">
+        ${item.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+      </div>
+      <div class="iq-ans">${item.ans}</div>
+    `;
+    grid.appendChild(div);
+  });
+  container.appendChild(grid);
+}
+
+function toggleAns(btn, e) {
+  e.stopPropagation();
+  const ans = btn.parentElement.querySelector('.iq-ans');
+  ans.classList.toggle('show');
+  btn.textContent = ans.classList.contains('show') ? 'Hide Ans' : 'Show Ans';
+}
+
+// ─── MCQ PRACTICE ────────────────────────────────────────────────────
+
+let mcqState = { questions: [], current: 0, answers: {} };
+
+function startMCQ() {
+  const weekFilter = document.getElementById('mcq-week-select').value;
+  const qs = weekFilter === 'all' ? [...ALL_MCQ] : ALL_MCQ.filter(q => q.week == weekFilter);
+  // Shuffle
+  mcqState.questions = qs.sort(() => Math.random() - 0.5);
+  mcqState.answers = {};
+  renderMCQ();
+}
+
+function renderMCQ() {
+  const container = document.getElementById('mcq-container');
+  const {questions, answers} = mcqState;
+  if (!questions.length) { container.innerHTML = '<div class="card" style="text-align:center;padding:32px;color:var(--muted)">No questions for this selection.</div>'; return; }
+
+  let score = Object.entries(answers).filter(([i, a]) => questions[i].ans === a).length;
+  let answered = Object.keys(answers).length;
+
+  let html = '';
+  if (answered === questions.length && questions.length > 0) {
+    const pct = Math.round(score/questions.length*100);
+    const cls = pct >= 70 ? 'good' : pct >= 50 ? 'avg' : 'bad';
+    html += `<div class="score-board show">
+      <div class="score-big ${cls}">${pct}%</div>
+      <div class="score-label">${score} / ${questions.length} correct</div>
+      <button class="btn btn-primary" onclick="startMCQ()">Retry</button>
+    </div>`;
+  }
+
+  html += `<div class="quiz-progress">Answered: <span>${answered}</span>/${questions.length} &nbsp;|&nbsp; Score: <span>${score}</span></div>`;
+
+  questions.forEach((q, i) => {
+    const ans = answers[i];
+    const revealed = ans !== undefined;
+    html += `<div class="q-card">
+      <div class="q-num">Q${i+1} · Week ${q.week}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="options">
+        ${q.opts.map((opt, j) => {
+          let cls = '';
+          if (revealed) {
+            if (j === q.ans) cls = 'correct';
+            else if (j === ans && j !== q.ans) cls = 'wrong';
+          } else if (ans === j) cls = 'selected';
+          return `<div class="option ${cls} ${revealed?'disabled':''}" onclick="${revealed?'':` selectMCQ(${i}, ${j})`}">
+            <div class="opt-key">${'ABCD'[j]}</div>
+            <div>${opt}</div>
+          </div>`;
+        }).join('')}
+      </div>
+      ${revealed ? `<div class="explanation show ${answers[i]!==q.ans?'wrong-exp':''}">
+        <strong>${answers[i]===q.ans?'✅ Correct!':'❌ Incorrect!'}</strong> ${q.exp}
+      </div>` : ''}
+    </div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+function selectMCQ(qi, optIdx) {
+  mcqState.answers[qi] = optIdx;
+  renderMCQ();
+}
+
+// ─── MOCK TEST ────────────────────────────────────────────────────────
+
+let mockState = { answers: {}, current: 0, timerInterval: null, secondsLeft: 3600 };
+
+function startMock() {
+  document.getElementById('mock-intro').style.display = 'none';
+  document.getElementById('mock-test').style.display = 'block';
+  mockState = { answers: {}, current: 0, timerInterval: null, secondsLeft: 3600 };
+  renderMockNav();
+  renderMockQuestion();
+  startMockTimer();
+}
+
+function startMockTimer() {
+  mockState.timerInterval = setInterval(() => {
+    mockState.secondsLeft--;
+    if (mockState.secondsLeft <= 0) { submitMock(); return; }
+    const min = Math.floor(mockState.secondsLeft/60);
+    const sec = mockState.secondsLeft % 60;
+    const el = document.getElementById('mock-timer');
+    el.textContent = `⏱ ${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+    el.className = 'timer' + (mockState.secondsLeft < 120 ? ' danger' : mockState.secondsLeft < 300 ? ' warn' : '');
+  }, 1000);
+}
+
+function renderMockNav() {
+  const nav = document.getElementById('mock-nav');
+  nav.innerHTML = MOCK_TEST.map((_, i) => {
+    let cls = i === mockState.current ? 'current' : mockState.answers[i] !== undefined ? 'answered' : '';
+    return `<button class="q-nav-btn ${cls}" onclick="goToMock(${i})">${i+1}</button>`;
+  }).join('');
+}
+
+function renderMockQuestion() {
+  const q = MOCK_TEST[mockState.current];
+  const ans = mockState.answers[mockState.current];
+  document.getElementById('mock-q-num').textContent = mockState.current + 1;
+  document.getElementById('mock-prev-btn').disabled = mockState.current === 0;
+  document.getElementById('mock-next-btn').textContent = mockState.current === MOCK_TEST.length-1 ? 'Review →' : 'Next →';
+
+  document.getElementById('mock-q-container').innerHTML = `
+    <div class="q-card">
+      <div class="q-num">Question ${mockState.current+1} of ${MOCK_TEST.length}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="options">
+        ${q.opts.map((opt, j) =>
+          `<div class="option ${ans===j?'selected':''}" onclick="selectMock(${j})">
+            <div class="opt-key">${'ABCD'[j]}</div>
+            <div>${opt}</div>
+          </div>`
+        ).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function selectMock(idx) {
+  mockState.answers[mockState.current] = idx;
+  renderMockQuestion();
+  renderMockNav();
+}
+
+function goToMock(i) {
+  mockState.current = i;
+  renderMockQuestion();
+  renderMockNav();
+}
+
+function mockNext() {
+  if (mockState.current < MOCK_TEST.length-1) {
+    mockState.current++;
+    renderMockQuestion();
+    renderMockNav();
+  }
+}
+
+function mockPrev() {
+  if (mockState.current > 0) {
+    mockState.current--;
+    renderMockQuestion();
+    renderMockNav();
+  }
+}
+
+function submitMock() {
+  clearInterval(mockState.timerInterval);
+  document.getElementById('mock-test').style.display = 'none';
+  const result = document.getElementById('mock-result');
+  result.style.display = 'block';
+
+  let score = 0;
+  MOCK_TEST.forEach((q, i) => { if (mockState.answers[i] === q.ans) score++; });
+  const pct = Math.round(score/MOCK_TEST.length*100);
+  const cls = pct >= 70 ? 'good' : pct >= 50 ? 'avg' : 'bad';
+  const grade = pct >= 80 ? 'Excellent! 🏆' : pct >= 60 ? 'Good Pass ✅' : pct >= 40 ? 'Needs Work ⚠️' : 'Review All Topics 📚';
+
+  let html = `
+    <div class="score-board show" style="margin-bottom:24px">
+      <div class="score-big ${cls}">${pct}%</div>
+      <div class="score-label">${score} / ${MOCK_TEST.length} correct · ${grade}</div>
+      <button class="btn btn-primary" style="margin-right:8px" onclick="restartMock()">Retake Test</button>
+      <button class="btn btn-secondary" onclick="showReview()">Review Answers</button>
+    </div>
+    <div id="mock-review" style="display:none">
+      <h2 style="margin-bottom:16px">Detailed Review</h2>
+  `;
+
+  MOCK_TEST.forEach((q, i) => {
+    const userAns = mockState.answers[i];
+    const correct = userAns === q.ans;
+    html += `<div class="q-card" style="border-left:3px solid ${correct?'var(--accent3)':'var(--danger)'}">
+      <div class="q-num">Q${i+1} ${correct?'✅':'❌'}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="options">
+        ${q.opts.map((opt, j) => {
+          let cls = j === q.ans ? 'correct' : (j === userAns && !correct) ? 'wrong' : '';
+          return `<div class="option ${cls} disabled">
+            <div class="opt-key">${'ABCD'[j]}</div><div>${opt}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  });
+
+  html += '</div>';
+  result.innerHTML = html;
+}
+
+function showReview() {
+  document.getElementById('mock-review').style.display = 'block';
+}
+
+function restartMock() {
+  document.getElementById('mock-result').style.display = 'none';
+  document.getElementById('mock-intro').style.display = 'block';
+  document.getElementById('mock-intro').querySelector('button').textContent = '▶ Start Mock Test';
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────
+renderWeekGrid();
+</script>
+</body>
+</html>
